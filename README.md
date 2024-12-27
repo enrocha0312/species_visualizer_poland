@@ -16,3 +16,24 @@ I confess I haven't read that the application should be decomposed into shiny mo
 ## CSS and JS
 
 I've just created a CSS for a modern design, not so deeply worked. The JS is just to have javascript manipulating DOM elements
+
+## About the file
+
+I've filtered the file for Poland. I had to use Linux due to its speed for this kind of process. My code for generate this command:
+
+
+file_path = "occurence.csv"
+tabela_teste = fread("occurence.csv", nrows=5)
+filter_column <- "country"
+filter_value <- "Poland"
+filtered_file_path <- "occurence_poland.csv"
+col_index <- which(colnames(fread(file_path, nrows = 1)) == filter_column)
+
+cmd <- sprintf('awk -F, \'NR==1 || $%d == "%s"\' %s > %s',
+               col_index, filter_value, file_path, filtered_file_path)
+
+* By generating this cmd command, I've just used the git bash for filtering the file.
+
+## Host on Shiny Apps
+
+https://enrtechnologyandknowledge.shinyapps.io/speciesinpoland/

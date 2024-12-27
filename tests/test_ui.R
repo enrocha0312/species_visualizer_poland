@@ -1,20 +1,21 @@
 library(testthat)
-library(shinytest2)
+library(shiny)
 
 test_that("UI elements exist", {
-  app <- AppDriver$new("../../app.R")
+  app <- shinyApp(
+    ui = source("../app.R")$value,
+    server = function(input, output, session) {}
+  )
   
 
-  expect_true(app$has_input("species_input"))
-  expect_true(app$has_input("vernacular_input"))
-  expect_true(app$has_input("from_date"))
-  expect_true(app$has_input("to_date"))
-  
+  expect_true("species_input" %in% names(app$ui))
+  expect_true("vernacular_input" %in% names(app$ui))
+  expect_true("from_date" %in% names(app$ui))
+  expect_true("to_date" %in% names(app$ui))
+  expect_true("generate_map" %in% names(app$ui))
+  expect_true("search_species" %in% names(app$ui))
+  expect_true("search_by_date" %in% names(app$ui))
 
-  expect_true(app$has_input("generate_map"))
-  expect_true(app$has_input("search_species"))
-  expect_true(app$has_input("search_by_date"))
-
-  expect_true(app$has_output("mapOutput"))
-  expect_true(app$has_output("timeLinePlot"))
+  expect_true("mapOutput" %in% names(app$ui))
+  expect_true("timeLinePlot" %in% names(app$ui))
 })
