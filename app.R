@@ -57,7 +57,7 @@ server <- function(input, output) {
       $("#progress-bar").css("width", "100%");
       setTimeout(function() { 
         $("#progress-container").remove(); 
-      }, 5000);  // Atraso para manter a barra de progresso por 5 segundos
+      }, 5000);  
     ')
   }
   
@@ -70,9 +70,17 @@ server <- function(input, output) {
     
     species_data <- dbGetQuery(con, 
                                "SELECT scientificName, vernacularName, latitudeDecimal, longitudeDecimal, COUNT(*) as count
-                                FROM occurences_db
-                                WHERE latitudeDecimal IS NOT NULL AND longitudeDecimal IS NOT NULL
-                                GROUP BY scientificName, vernacularName, latitudeDecimal, longitudeDecimal")
+                              FROM occurences_db
+                              WHERE latitudeDecimal IS NOT NULL AND longitudeDecimal IS NOT NULL
+                              GROUP BY scientificName, vernacularName, latitudeDecimal, longitudeDecimal")
+    
+    species_summary <- dbGetQuery(con, 
+                                  "SELECT scientificName, vernacularName, COUNT(*) as count
+                                 FROM occurences_db
+                                 WHERE scientificName IS NOT NULL AND vernacularName IS NOT NULL
+                                 GROUP BY scientificName, vernacularName
+                                 ORDER BY count DESC")
+    callModule(tableModule, "species_table_module", species_summary = species_summary)
     
     poland_bounds <- list(
       lng_min = 14.0, lng_max = 24.2,
@@ -106,10 +114,10 @@ server <- function(input, output) {
     
     timeline_data <- dbGetQuery(con, 
                                 "SELECT eventDate, COUNT(*) as count
-                                 FROM occurences_db
-                                 WHERE eventDate IS NOT NULL
-                                 GROUP BY eventDate
-                                 ORDER BY eventDate ASC")
+                               FROM occurences_db
+                               WHERE eventDate IS NOT NULL
+                               GROUP BY eventDate
+                               ORDER BY eventDate ASC")
     
     output$timeLinePlot <- renderPlot({
       if (nrow(timeline_data) > 0) {
